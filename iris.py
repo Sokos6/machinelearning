@@ -44,11 +44,11 @@ plt.show()
 
 # Split-out validation dataset
 array = dataset.values
-X = array[:,0;4]
+X = array[:,0:4]
 Y = array[:,4]
 validation_size = 0.20
 seed = 7
-X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, test_size, random_state=seed)
+X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, test_size=validation_size, random_state=seed)
 
 # Test options and evaluation metric
 seed = 7
@@ -72,3 +72,19 @@ for name, model in models:
 	names.append(name)
 	msg = "%s: %f (%f)" % (name, cv_results.mean(), cv_results.std())
 	print(msg)
+
+
+## Compare Algorithms
+fig = plt.figure()
+fig.suptitle('Algorithm Comparison')
+ax = fig.add_subplot(111)
+plt.boxplot(results)
+ax.set_xticklabels(names)
+plt.show()
+
+# Make predications on validation dataset
+knn = KNeighborsClassifier()
+knn.fit(X_train, Y_train)
+predications = knn.predict(X_validation)
+print(accuracy_score(Y_validation, predications))
+print(classification_report(Y_validation, predications))
